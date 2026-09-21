@@ -1,0 +1,12 @@
+{
+    "chat.editor.preferCopilotHarness": false,
+    "chat.defaultToCopilotHarness": false,
+    "chat.agent.maxRequests": 9999,
+    "debug.onTaskErrors": "debugAnyway",
+    "files.exclude": {
+        "**/node_modules": true
+    },
+    "search.exclude": {
+        "**/node_modules": true
+    }
+}
