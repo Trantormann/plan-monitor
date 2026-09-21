@@ -4,6 +4,7 @@
     "private": true,
     "type": "module",
     "scripts": {
+        "preflight": "node scripts/check-env.mjs",
         "build": "tsc --project tsconfig.json",
         "watch": "tsc --project tsconfig.json --watch",
         "clean": "node -e \"require('fs').rmSync('dist', { recursive: true, force: true }); require('fs').rmSync('coverage', { recursive: true, force: true });\"",
