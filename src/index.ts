@@ -1,24 +1,42 @@
-import { DEFAULT_SETTINGS, loadSettings } from './app/settings/config.js';
-import { createProviderRegistry } from './app/providers/registry.js';
-import { createPoller } from './app/scheduler/poller.js';
-import { createTray } from './app/tray/tray.js';
+import {
+  parseCliArgs,
+  restartBackgroundProcess,
+  runDebugCommand,
+  runInstallCommand,
+  runStatusCommand,
+  startRuntime,
+  stopBackgroundProcess
+} from './app/runtime/launcher.js';
 
-async function start() {
-  const settings = loadSettings(DEFAULT_SETTINGS);
-  const registry = createProviderRegistry(settings);
-  const tray = createTray();
-  const poller = createPoller(registry, settings, (snapshots) => {
-    tray.update(snapshots);
-  });
+async function main() {
+  const parsed = parseCliArgs(process.argv.slice(2));
 
-  tray.update(await poller.refreshOnce());
-  poller.start();
-
-  console.log('plan-monitor started');
+  switch (parsed.command) {
+    case 'install':
+      process.exitCode = runInstallCommand();
+      return;
+    case 'status':
+      process.exitCode = runStatusCommand();
+      return;
+    case 'debug':
+      process.exitCode = runDebugCommand();
+      return;
+    case 'stop':
+      process.exitCode = stopBackgroundProcess();
+      return;
+    case 'restart':
+      process.exitCode = restartBackgroundProcess();
+      return;
+    case 'start':
+      process.exitCode = await startRuntime({ background: parsed.background, debug: parsed.debug });
+      return;
+    default:
+      process.exitCode = await startRuntime({ background: false, debug: false });
+  }
 }
 
-start().catch((error: unknown) => {
+main().catch((error: unknown) => {
   const message = error instanceof Error ? error.message : String(error);
-  console.error('plan-monitor failed to start:', message);
+  console.error('plan-monitor failed to execute:', message);
   process.exitCode = 1;
 });

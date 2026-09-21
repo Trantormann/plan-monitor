@@ -1,0 +1,5 @@
+{
+    "main": "./dist/plan-monitor.cjs",
+    "output": "./dist/plan-monitor.blob",
+    "disableExperimentalSEAWarning": true
+}

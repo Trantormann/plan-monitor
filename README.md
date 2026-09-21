@@ -46,6 +46,52 @@ Before installing or building the project, make sure you have:
    npm run dev
    ```
 
+## Single executable deployment model
+
+This project is designed to be wrapped into a single robust Windows executable that contains the operational lifecycle:
+
+- install
+- environment validation
+- upgrade and repair
+- background launch
+- status checks
+- debug diagnostics
+- graceful stop
+
+### Create the EXE
+
+```powershell
+npm run package:exe
+```
+
+The resulting binary is written to:
+
+```powershell
+dist/plan-monitor.exe
+```
+
+This packaging flow uses Node's built-in Single Executable Application support instead of the deprecated nexe download model, which avoids the certificate problems seen when fetching a prebuilt Node runtime.
+
+### Use the EXE in background mode
+
+```powershell
+./dist/plan-monitor.exe start --background
+./dist/plan-monitor.exe status
+./dist/plan-monitor.exe debug
+./dist/plan-monitor.exe stop
+```
+
+### Developer equivalent commands
+
+```powershell
+npm run preflight
+npm run build
+npm test
+npm run start:daemon
+npm run status
+npm run debug
+```
+
 ## Environment variables
 
 This app intentionally avoids storing credentials in code. Set the needed values before running the monitor:
@@ -75,7 +121,11 @@ $env:MONITOR_INTERVAL_MINUTES = "15"
 - npm run build
 - npm test
 - npm run dev
+- npm run start:daemon
+- npm run status
+- npm run debug
+- npm run package:exe
 
 ## Notes
 
-This app intentionally avoids storing credentials in code. Environment variables are read at runtime only.
+This app intentionally avoids storing credentials in code. Environment variables are read at runtime only. The executable mode is intended to be the production entry point for Windows deployment, while the Node.js scripts remain available for local debugging and iteration.
